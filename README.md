@@ -1,0 +1,2 @@
+# chinzhening.github.io
+Static site generator for [chinzhening.github.io](https://www.chinzhening.github.io.), built with [rust](https://www.rust-lang.org/) and [typst](https://www.typst.app/docs/) because why not.
