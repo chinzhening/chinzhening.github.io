@@ -13,6 +13,7 @@ const ROOT_DIR: &str = ".";
 
 const INDEX_FILENAME: &str = "index.typ";
 const STYLE_FILENAME: &str = "style.css";
+const SCRIPT_FILENAME: &str = "script.js";
 const METADATA_FILENAME: &str = "post-list.json";
 
 
@@ -130,7 +131,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
 
             // 6. Move fonts, images, and other assets over.
-            // TODO:
+            let script_path = PathBuf::from(ROOT_DIR).join(SCRIPT_FILENAME);
+            if script_path.exists() {
+                fs::copy(&script_path, to_build_path(&script_path))?;
+                println!("Copied {} to build.", SCRIPT_FILENAME);
+            } else {
+                println!("Warning: {} not found in root directory.", SCRIPT_FILENAME);
+            }
 
             println!("Build successful.");
         }
