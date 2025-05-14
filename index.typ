@@ -19,6 +19,4 @@
   Thanks for visiting and stay tuned for more!
 ]
 
-#let post-list-content = post-data.map(post-item)
-
-#post-list(post-list-content.join())
+#post-list(post-data)

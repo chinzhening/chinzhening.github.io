@@ -1,17 +1,9 @@
 #import "base.typ": *
 
-#let post-list(posts) = {
-  div(
-    class: "post-list",
-    posts,
-  )
-}
-
 #let post-item(item) = {
   let (path, frontmatter) = item
   let (date, description, tags, title) = frontmatter
 
-  // This is absurd bro.
   let href = post-link(path)
 
   div(
@@ -32,5 +24,17 @@
         description,
       )
     },
+  )
+}
+
+#let post-list(post-data) = {
+  let posts-sorted = post-data
+    .sorted(key: (it) => it.frontmatter.date)
+    .map(post-item)
+    .rev()
+    .join()
+  div(
+    class: "post-list",
+    posts-sorted,
   )
 }
