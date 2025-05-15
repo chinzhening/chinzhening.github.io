@@ -1,0 +1,10 @@
+---
+dir:
+  posts: "posts" 
+  build: "build" 
+  root: "." 
+filename:
+  index: "index.typ" 
+  style: "style.css" 
+  script: "script.js" 
+  metadata: "post-list.json" 

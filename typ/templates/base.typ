@@ -1,7 +1,8 @@
 #import "/typ/packages/utility.typ": *
 
 // All metadata of post content.
-#let post-data = json(bytes(read("/posts/meta/post-list.json")))
+#let post-list-metadata-filepath = sys.inputs.at("post-metadata-path", default: "/posts/meta/post-list.json")
+#let post-data = json(bytes(read(post-list-metadata-filepath)))
 
 // Converts source path to post link.
 #let post-link(src) = {
