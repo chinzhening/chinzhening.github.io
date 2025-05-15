@@ -22,7 +22,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Build the static site (./build is the default directory.)
+    /// Build the static site
     Build,
 }
 
@@ -57,7 +57,7 @@ fn make_html(file_path: &PathBuf, config: &config::Config) -> Result<(), Box<dyn
     if !output.status.success() {
         return Err(format!("{}", String::from_utf8_lossy(&output.stderr)).into());
     }
-    println!("Created {}", build_path.display());
+    println!("Creating {}", build_path.display());
     Ok(())
 }
 
@@ -76,7 +76,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             config_path.display()
         );
         process::exit(1);
-    // Check if config file is yml.
+    // Check if config file has .yml or .yaml extension.
     } else if !is_yml(&config_path) {
         eprintln!(
             "Config file at '{}' does not have the .yml or .yaml extension",
@@ -92,7 +92,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match &cli.command {
         Commands::Build => {
-            // 1. Generate metadata for .typ files in ./posts/
+            // Generate metadata for post.typ files
             let post_dir = PathBuf::from(&(config.dir.posts));
             let post_paths: Vec<PathBuf> = 
                 fs::read_dir(&post_dir)?
@@ -112,10 +112,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let meta_dir = post_dir.join("meta");
             
             fs::create_dir_all(&meta_dir)?;
+            println!("Writing post metadata to {}", meta_dir.join(&config.filename.metadata).display());
             fs::write(meta_dir.join(&config.filename.metadata).as_path(), &post_metadata_json)?;
-            println!("Wrote metadata to {}", meta_dir.join(&config.filename.metadata).display());
 
-            // 2. Prepare ./build/ directory
+            // Prepare the build directory
             println!("Building site...");
             let build_dir = PathBuf::from(&config.dir.build);
             if !(build_dir.exists() && build_dir.is_dir()) {
@@ -123,7 +123,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 fs::create_dir_all(&build_dir)?;
             }
 
-            // 3. Generate index.html to ./build/
+            // Generate index.html to build
             let root_dir = PathBuf::from(&config.dir.root);
             let index_path = root_dir.join(&config.filename.index);
             if !(index_path.exists() && index_path.is_file()) {
@@ -133,29 +133,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             make_html(&index_path, &config)?;
 
-            // 4. Generate post.html to ./build/posts/
-            let build_post_dir = build_dir.join(&post_dir);
+            // Generate post.html to build
+            let build_post_dir = to_build_path(&post_dir, &config);
             if !(build_post_dir.exists() && build_post_dir.is_dir()) {
                 println!("Creating directory at {}", build_post_dir.display());
                 fs::create_dir_all(build_post_dir)?;
             }
             for path  in &post_paths {
                 if let Err(e) = make_html(&path, &config) {
-                    eprintln!("Failed to compile {}:\n{}", path.display(), e);
+                    eprintln!("Failed to compile {}: {}", path.display(), e);
                 }
             }
 
-            // 5. Move style.css over
+            // Move style.css to build
             // TODO: change to SCSS
             let style_path = root_dir.join(&config.filename.style);
             if style_path.exists() {
+                println!("Copying {} to build.", style_path.display());
                 fs::copy(&style_path, to_build_path(&style_path, &config))?;
-                println!("Copied {} to build.", style_path.display());
             } else {
                 println!("Warning: {} not found in root directory.", &config.filename.style);
             }
 
-            // 6. Move fonts, images, and other assets over.
+            // Move script.js to build
             let script_path = root_dir.join(&config.filename.script);
             if script_path.exists() {
                 fs::copy(&script_path, to_build_path(&script_path, &config))?;
