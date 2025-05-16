@@ -20,6 +20,7 @@ body {
     min-height: 100%;
     position: relative;
     z-index: -10000;
+    font-family: 'Crimson Pro';
 }
 
 div.main-content {

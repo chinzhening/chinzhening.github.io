@@ -3,8 +3,11 @@ dir:
   posts: "posts" 
   build: "build" 
   root: "." 
-filename:
+  fonts: "fonts"
+filename: 
   index: "index.typ" 
   style: "style.css" 
   script: "script.js" 
   metadata: "post-list.json" 
+font:
+  active: "crimson-pro"
