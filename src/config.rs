@@ -34,7 +34,7 @@ pub struct Filenames {
 
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct Font {
-    pub active: Option<String>,
+    pub default: Option<String>,
 }
 
 impl TryFrom<&PathBuf> for Config {

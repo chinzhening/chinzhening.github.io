@@ -169,35 +169,35 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if !(fonts_dir.is_dir() && fonts_dir.exists()) {
                 println!("Warning: {} not found in root directory.", fonts_dir.display())
             } else {
-                match &config.font.active {
-                    Some(active_font) => {
-                        let active_font_dir = fonts_dir.join(&active_font);
-                        if !(active_font_dir.is_dir() && active_font_dir.exists()) {
-                            println!("Warning: {} directory not found.", active_font_dir.display());
+                match &config.font.default {
+                    Some(default_font) => {
+                        let default_font_dir = fonts_dir.join(&default_font);
+                        if !(default_font_dir.is_dir() && default_font_dir.exists()) {
+                            println!("Warning: {} directory not found.", default_font_dir.display());
                         } else {
-                            let active_font_paths: Vec<PathBuf> = fs::read_dir(&active_font_dir)?
+                            let default_font_paths: Vec<PathBuf> = fs::read_dir(&default_font_dir)?
                                 .flatten()
                                 .map(|entry| entry.path())
                                 .filter(|path| path.is_file())
                                 .collect();
 
-                            let build_active_font_dir = to_build_path(&active_font_dir, &config);
-                            if !(build_active_font_dir.exists() && build_active_font_dir.is_dir()) {
-                                println!("Creating directory at {}", build_active_font_dir.display());
-                                fs::create_dir_all(build_active_font_dir)?;
+                            let build_default_font_dir = to_build_path(&default_font_dir, &config);
+                            if !(build_default_font_dir.exists() && build_default_font_dir.is_dir()) {
+                                println!("Creating directory at {}", build_default_font_dir.display());
+                                fs::create_dir_all(build_default_font_dir)?;
                             }
-                            for path in &active_font_paths {
+                            for path in &default_font_paths {
                                 fs::copy(&path, to_build_path(&path, &config))?;
                             }
                         }
 
-                        // Move active active-font.css to build
-                        let active_font_style_path = root_dir.join(&active_font).with_extension("css");
-                        if active_font_style_path.exists() {
-                            println!("Copying {} to build.", active_font_style_path.display());
-                            fs::copy(&active_font_style_path, to_build_path(&active_font_style_path, &config))?;
+                        // Move default default-font.css to build
+                        let default_font_style_path = root_dir.join(&default_font).with_extension("css");
+                        if default_font_style_path.exists() {
+                            println!("Copying {} to build.", default_font_style_path.display());
+                            fs::copy(&default_font_style_path, to_build_path(&default_font_style_path, &config))?;
                         } else {
-                            println!("Warning: {} not found.", active_font_style_path.display());
+                            println!("Warning: {} not found.", default_font_style_path.display());
                         }
 
                     }

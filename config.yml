@@ -10,4 +10,4 @@ filename:
   script: "script.js" 
   metadata: "post-list.json" 
 font:
-  active: "crimson-pro"
+  default: "crimson-pro"
