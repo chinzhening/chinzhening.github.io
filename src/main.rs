@@ -164,6 +164,50 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("Warning: {} not found in root directory.", &config.filename.script);
             }
 
+            // Move fonts to build
+            let fonts_dir = PathBuf::from(&config.dir.fonts);
+            if !(fonts_dir.is_dir() && fonts_dir.exists()) {
+                println!("Warning: {} not found in root directory.", fonts_dir.display())
+            } else {
+                match &config.font.default {
+                    Some(default_font) => {
+                        let default_font_dir = fonts_dir.join(&default_font);
+                        if !(default_font_dir.is_dir() && default_font_dir.exists()) {
+                            println!("Warning: {} directory not found.", default_font_dir.display());
+                        } else {
+                            let default_font_paths: Vec<PathBuf> = fs::read_dir(&default_font_dir)?
+                                .flatten()
+                                .map(|entry| entry.path())
+                                .filter(|path| path.is_file())
+                                .collect();
+
+                            let build_default_font_dir = to_build_path(&default_font_dir, &config);
+                            if !(build_default_font_dir.exists() && build_default_font_dir.is_dir()) {
+                                println!("Creating directory at {}", build_default_font_dir.display());
+                                fs::create_dir_all(build_default_font_dir)?;
+                            }
+                            for path in &default_font_paths {
+                                fs::copy(&path, to_build_path(&path, &config))?;
+                            }
+                        }
+
+                        // Move default default-font.css to build
+                        let default_font_style_path = root_dir.join(&default_font).with_extension("css");
+                        if default_font_style_path.exists() {
+                            println!("Copying {} to build.", default_font_style_path.display());
+                            fs::copy(&default_font_style_path, to_build_path(&default_font_style_path, &config))?;
+                        } else {
+                            println!("Warning: {} not found.", default_font_style_path.display());
+                        }
+
+                    }
+                    None => {
+                        println!("Using default system fonts.");
+                    }
+                }
+            }
+            
+
             println!("Build successful.");
         }
     }

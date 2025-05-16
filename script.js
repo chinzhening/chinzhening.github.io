@@ -1,3 +1,5 @@
+currentFont = 'font-crimson-pro';
+
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('span.inline-equation svg.typst-doc').forEach(svg => {
         svg.removeAttribute('height');
@@ -5,9 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
         svg.style.height = '0.65em';
         svg.style.width = 'auto';
     });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('p.block-equation svg.typst-doc').forEach(svg => {
         svg.removeAttribute('height');
         svg.removeAttribute('width');
@@ -20,4 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
         svg.style.height = blockHeight;
         svg.style.width = 'auto';
     });
+ 
+    document.body.classList.add(currentFont);
 });

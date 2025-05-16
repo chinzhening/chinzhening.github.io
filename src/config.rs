@@ -13,6 +13,7 @@ pub fn get_default_path() -> PathBuf {
 pub struct Config {
     pub dir: Dirs,
     pub filename: Filenames,
+    pub font: Font,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
@@ -20,6 +21,7 @@ pub struct Dirs {
     pub posts: String,
     pub build: String,
     pub root: String,
+    pub fonts: String,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
@@ -28,6 +30,11 @@ pub struct Filenames {
     pub style: String,
     pub script: String,
     pub metadata: String,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+pub struct Font {
+    pub default: Option<String>,
 }
 
 impl TryFrom<&PathBuf> for Config {
