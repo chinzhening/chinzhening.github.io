@@ -257,6 +257,19 @@ p.block-equation {
     padding: 0.10em 0.25em 0.15em 0.25em;
 }
 
+@media (max-width: 750px) {
+    .toolbar, .font-menu {
+        margin: auto;
+        left: 0;
+        right: 0;
+        max-width: 1000px;
+        line-height: 1.25;
+        font-size: 0.9rem;
+        padding: 0.10em 0.25em 0.15em 0.25em;
+    }
+
+}
+
 .font-menu {
     box-sizing: border-box;
     display: inline-block;
