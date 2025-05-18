@@ -19,4 +19,4 @@
   Thanks for visiting and stay tuned for more!
 ]
 
-#post-list(post-data)
+#post-list(posts-metadata)

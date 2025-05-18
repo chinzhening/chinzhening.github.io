@@ -27,8 +27,8 @@
   )
 }
 
-#let post-list(post-data) = {
-  let posts-sorted = post-data
+#let post-list(posts-metadata) = {
+  let posts-sorted = posts-metadata
     .sorted(key: (it) => it.frontmatter.date)
     .map(post-item)
     .rev()

@@ -137,6 +137,12 @@ div.nav-wrap.right {
     right: 0;
 }
 
+@media (max-width: 750px) {
+  .nav-wrap {
+    display: none;
+  }
+}
+
 .side {
     top: 0;
     bottom: 0;
@@ -226,4 +232,42 @@ p.block-equation {
 
 .about-me {
     margin-bottom: 2rem;
+}
+
+/* Toolbar Options */
+.toolbar {
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    background-color: #fff;
+    clear: both;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    opacity: 1;
+}
+
+.toolbar, .font-menu {
+    margin: auto;
+    left: 2.5rem;
+    right: 2.5rem;
+    max-width: 1000px;
+    line-height: 1.25;
+    font-size: 0.9rem;
+    padding: 0.10em 0.25em 0.15em 0.25em;
+}
+
+.font-menu {
+    box-sizing: border-box;
+    display: inline-block;
+}
+
+.font-toggle {
+    display: inline-block;
+    color: #999;
+    padding: 0.2em;
+}
+
+.font-toggle:hover, .font-toggle.active {
+    color: black;
 }

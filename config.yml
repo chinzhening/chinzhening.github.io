@@ -1,13 +1,22 @@
 ---
-dir:
-  posts: "posts" 
-  build: "build" 
-  root: "." 
-  fonts: "fonts"
-filename: 
-  index: "index.typ" 
-  style: "style.css" 
-  script: "script.js" 
-  metadata: "post-list.json" 
-font:
+root:
+  dir: "."
+  index: "index.typ"
+  style: "style.css"
+  script: "script.js"
+build:
+  dir: "build"
+fonts:
+  dir: "fonts"
   default: "crimson-pro"
+  primary: "noto-serif"
+  secondary: "roboto"
+meta:
+  dir: "meta"
+  posts: "posts.json"
+  fonts: "fonts.json"
+posts:
+  dir: "posts" 
+styles:
+  dir: "styles"
+  style: "style.css"

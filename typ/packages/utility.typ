@@ -57,6 +57,31 @@
 }
 
 
+// Taken from: https://github.com/typst-doc-cn/news/blob/main/typ/packages/html-toolkit.typ
+
+/// Creates a preload link for the given CSS file.
+///
+/// - href (str): The URL of the CSS file.
+/// -> content
+#let preload-css(href) = to-html(
+  xml
+    .decode(
+      ```xml
+      <link
+      rel="preload"
+      as="style"
+      href="{{href}}"
+      onload="this.rel='stylesheet'"
+      />
+      ```
+        .text
+        .replace("{{href}}", href),
+    )
+    .at(0),
+)
+
+
+
 // Wrapper for html.elem
 //
 // - content (content): The content of the element.
@@ -78,3 +103,5 @@
 #let div-frame(content, attrs: (:), tag: "div") = html.elem(tag, html.frame(content), attrs: attrs)
 #let span-frame = div-frame.with(tag: "span")
 #let p-frame = div-frame.with(tag: "p")
+
+#let script = html-elem.with(tag: "script")

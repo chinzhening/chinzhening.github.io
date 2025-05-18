@@ -4,11 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/script.js"></script>
-    <link rel="stylesheet" media="all" href="/crimson-pro.css">
-    <link rel="stylesheet" media="all" href="/style.css">
+    <link rel="stylesheet" media="all" href="/styles/style.css">
+    <script>
+// Font Toggling
+window.addEventListener("load", event => {
+  const default_font_class = "font--crimson-pro";
+  setBodyText(default_font_class);
+})
+function setBodyText(toggle_class) {
+    console.log(`setting body text to ${toggle_class}`);
+    Array.from(document.body.classList)
+    .filter(name => name.startsWith("font--"))
+    .map(name => document.body.classList.remove(name));
+    document.body.classList.add(toggle_class)
+    Array.from(document.getElementsByClassName("font-toggle"))
+    .map(el => el.classList.remove("active"));
+    document.getElementById(toggle_class).classList.add("active");
+}
+
+function handleFontChange(evt) {
+    setBodyText(evt.id);
+}</script>
+    <link rel="preload" as="style" href="\styles\crimson-pro.css" onload="this.rel='stylesheet'">
+    <link rel="preload" as="style" href="\styles\noto-serif.css" onload="this.rel='stylesheet'">
+    <link rel="preload" as="style" href="\styles\roboto.css" onload="this.rel='stylesheet'">
     <meta name="description" content="Testing out the metadata querying.">
   </head>
   <body>
+    <div class="toolbar"><span class="font-menu"><a class="font-toggle active" id="font--crimson-pro" onmousedown="event.stopPropagation()" onclick="handleFontChange(this)">Crimson Pro</a></span><span class="font-menu"><a class="font-toggle" id="font--noto-serif" onmousedown="event.stopPropagation()" onclick="handleFontChange(this)">Noto Serif</a></span><span class="font-menu"><a class="font-toggle" id="font--roboto" onmousedown="event.stopPropagation()" onclick="handleFontChange(this)">Roboto</a></span></div>
     <div class="main-content">
       <div class="post-document">
         <div class="title-block">
