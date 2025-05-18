@@ -1,5 +1,3 @@
-currentFont = 'font-crimson-pro';
-
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('span.inline-equation svg.typst-doc').forEach(svg => {
         svg.removeAttribute('height');
@@ -20,5 +18,4 @@ document.addEventListener('DOMContentLoaded', () => {
         svg.style.width = 'auto';
     });
  
-    document.body.classList.add(currentFont);
 });

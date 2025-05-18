@@ -18,5 +18,4 @@ document.addEventListener('DOMContentLoaded', () => {
         svg.style.width = 'auto';
     });
  
-    document.body.classList.add('font-crimson-pro');
 });

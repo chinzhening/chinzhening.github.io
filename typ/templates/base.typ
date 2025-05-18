@@ -1,8 +1,11 @@
 #import "/typ/packages/utility.typ": *
 
-// All metadata of post content.
-#let post-list-metadata-filepath = sys.inputs.at("post-metadata-path", default: "/posts/meta/post-list.json")
-#let post-data = json(bytes(read(post-list-metadata-filepath)))
+// All metadata of the posts.
+#let posts-metadata-path = sys.inputs.at("posts-metadata-path", default: "/meta/posts.json")
+#let fonts-metadata-path = sys.inputs.at("fonts-metadata-path", default: "/meta/fonts.json")
+// All metadata of the fonts.
+#let posts-metadata = json(bytes(read(posts-metadata-path)))
+#let fonts-metadata = json(bytes(read(fonts-metadata-path)))
 
 // Converts source path to post link.
 #let post-link(src) = {
@@ -10,8 +13,58 @@
   href
 }
 
+#let font-item(item) = {
+  span(
+    class: "font-menu",
+    a(
+      class: "font-toggle" + if item.status == "default" {" active"} else {""},
+      id: item.toggle_class,
+      onmousedown: "event.stopPropagation()",
+      onclick: "handleFontChange(this)",
+      item.font_family
+    )
+  )
+}
+
+#let font-script = {
+  let default = fonts-metadata.at(0)
+  script({
+    ```js
+    
+    // Font Toggling
+    window.addEventListener("load", event => {
+      const default_font_class = "{{class}}";
+      setBodyText(default_font_class);
+    })
+    function setBodyText(toggle_class) {
+        console.log(`setting body text to ${toggle_class}`);
+        Array.from(document.body.classList)
+        .filter(name => name.startsWith("font--"))
+        .map(name => document.body.classList.remove(name));
+        document.body.classList.add(toggle_class)
+        Array.from(document.getElementsByClassName("font-toggle"))
+        .map(el => el.classList.remove("active"));
+        document.getElementById(toggle_class).classList.add("active");
+    }
+
+    function handleFontChange(evt) {
+        setBodyText(evt.id);
+    }
+    ```
+      .text
+      .replace("{{class}}", default.toggle_class)
+})
+}
+
 #let header = {
-  /// Not Implemented
+  div(
+    class: "toolbar",
+    {
+      fonts-metadata
+        .map(font-item)
+        .join()
+    }
+  )
 }
 
 #let footer = {
@@ -45,14 +98,20 @@
   )
 }
 
-#let main-font = (
-  "Libertinus Serif",
-)
-
 #let base-template(go-prev: none, go-next: none, description: none, content) = {
   set document(description: description) if description != none
   
   show: load-html-template.with(
+    extra-head: {
+      font-script
+      fonts-metadata
+        .map((item) => {
+          let href = item.font_style_path.slice(1).replace("\\\\", "/")
+          href
+        })
+        .map(preload-css)
+        .join()
+    },
     "/base.html",
   )
 
@@ -64,10 +123,9 @@
     attrs: (class: "inline-equation")
   )
 
-  set text(font: main-font)
-
   header
   div(class: "main-content", content)
   navigation(go-prev: go-prev, go-next: go-next)
   footer
+  
 }

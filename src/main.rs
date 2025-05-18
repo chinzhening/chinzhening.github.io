@@ -5,7 +5,10 @@ use std::path::PathBuf;
 use std::process::Command;
 
 mod config;
+mod font;
+mod path_manager;
 mod post;
+mod utility;
 
 #[derive(Parser)]
 #[command(name = "ssg")]
@@ -26,23 +29,8 @@ enum Commands {
     Build,
 }
 
-
-fn is_typ(path_buf: &PathBuf) -> bool {
-    return path_buf.extension().map(|ext| ext == "typ").unwrap_or(false);
-}
-
-fn is_yml(path_buf: &PathBuf) -> bool {
-    return path_buf.extension().map(|ext| ext == "yml" || ext == "yaml" ).unwrap_or(false);
-}
-
-fn to_build_path(file_path: &PathBuf, config: &config::Config) -> PathBuf {
-    return PathBuf::from(&config.dir.build).join(file_path);
-}
-
-fn make_html(file_path: &PathBuf, config: &config::Config) -> Result<(), Box<dyn std::error::Error>> {
-    let build_path = to_build_path(file_path, &config).with_extension("html");
-    let metadata_path = PathBuf::from(&config.dir.posts).join("meta").join(&config.filename.metadata);
-    
+fn make_html(file_path: &PathBuf, path_manager: &path_manager::PathManager) -> Result<(), Box<dyn std::error::Error>> {
+    let build_path = path_manager.to_build_path(file_path).with_extension("html");
 
     let output = Command::new("typst")
         .args([
@@ -50,8 +38,9 @@ fn make_html(file_path: &PathBuf, config: &config::Config) -> Result<(), Box<dyn
             file_path.to_str().unwrap(),
             build_path.to_str().unwrap(),
             "--features", "html",
-            "--root", &(config.dir.root),
-            "--input", &format!("post-metadata-path=\\{}", metadata_path.to_str().unwrap())
+            "--root", path_manager.root().to_str().unwrap(),
+            "--input", &format!("posts-metadata-path=\\{}", path_manager.posts_metadata_path().to_str().unwrap()),
+            "--input", &format!("fonts-metadata-path=\\{}", path_manager.fonts_metadata_path().to_str().unwrap())
         ])
         .output()?;
     if !output.status.success() {
@@ -67,7 +56,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let config_path = cli
         .config_path
-        .unwrap_or_else(|| PathBuf::from(config::get_default_path()));
+        .unwrap_or_else(|| PathBuf::from(path_manager::default_config_path()));
 
     // Check if config file exists.
     if !(config_path.exists() && config_path.is_file()) {
@@ -77,7 +66,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
         process::exit(1);
     // Check if config file has .yml or .yaml extension.
-    } else if !is_yml(&config_path) {
+    } else if !utility::is_yml(&config_path) {
         eprintln!(
             "Config file at '{}' does not have the .yml or .yaml extension",
             config_path.display()
@@ -86,127 +75,163 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // Create config
-    let config = config::Config::try_from(&config_path)?;
-    let metadata_factory = post::MetadataFactory::new(&config);
+    let config = config::Config::new(&config_path)?;
+
+    // Verify config project structure
+    let path_manager = path_manager::PathManager::new(config)?;
+    path_manager.create_dirs()?;
+    path_manager.to_build().create_dirs()?;
+    
+    // Create metadata factories
+    let post_metadata_factory = post::PostMetadataFactory::new(&path_manager);
+    let font_metadata_factory = font::FontMetadataFactory::new(&path_manager);
 
 
     match &cli.command {
         Commands::Build => {
-            // Generate metadata for post.typ files
-            let post_dir = PathBuf::from(&(config.dir.posts));
-            let post_paths: Vec<PathBuf> = 
-                fs::read_dir(&post_dir)?
-                    .flatten()
-                    .map(|entry| entry.path())
-                    .filter(|path| path.is_file())
-                    .filter(is_typ)
-                    .collect();
-            
-            let post_metadata: Vec<post::PostMetadata> =
-                post_paths
-                    .iter()
-                    .filter_map(|path| (&metadata_factory).build(&path).ok())
-                    .collect();
-            
-            let post_metadata_json = serde_json::to_string_pretty(&post_metadata)?;
-            let meta_dir = post_dir.join("meta");
-            
-            fs::create_dir_all(&meta_dir)?;
-            println!("Writing post metadata to {}", meta_dir.join(&config.filename.metadata).display());
-            fs::write(meta_dir.join(&config.filename.metadata).as_path(), &post_metadata_json)?;
+            // Generate metadata
+            println!("Generating metadata...");
+            post_metadata_factory.generate_metadata()?;
+            font_metadata_factory.generate_metadata()?;
 
-            // Prepare the build directory
+            // Build site
             println!("Building site...");
-            let build_dir = PathBuf::from(&config.dir.build);
-            if !(build_dir.exists() && build_dir.is_dir()) {
-                println!("Creating directory at {}", build_dir.display());
-                fs::create_dir_all(&build_dir)?;
-            }
 
             // Generate index.html to build
-            let root_dir = PathBuf::from(&config.dir.root);
-            let index_path = root_dir.join(&config.filename.index);
+            let index_path = path_manager.index_path();
             if !(index_path.exists() && index_path.is_file()) {
-                eprintln!("{} does not exist in the root directory.", &config.filename.index);
+                eprintln!("{} does not exist.", index_path.display());
                 std::process::exit(1);
             }
 
-            make_html(&index_path, &config)?;
+            make_html(&index_path, &path_manager)?;
 
             // Generate post.html to build
-            let build_post_dir = to_build_path(&post_dir, &config);
-            if !(build_post_dir.exists() && build_post_dir.is_dir()) {
-                println!("Creating directory at {}", build_post_dir.display());
-                fs::create_dir_all(build_post_dir)?;
-            }
-            for path  in &post_paths {
-                if let Err(e) = make_html(&path, &config) {
+            for path  in path_manager.post_paths()? {
+                if let Err(e) = make_html(&path, &path_manager) {
                     eprintln!("Failed to compile {}: {}", path.display(), e);
                 }
             }
 
             // Move style.css to build
             // TODO: change to SCSS
-            let style_path = root_dir.join(&config.filename.style);
+            let style_path = path_manager.style_path();
             if style_path.exists() {
                 println!("Copying {} to build.", style_path.display());
-                fs::copy(&style_path, to_build_path(&style_path, &config))?;
+                fs::copy(&style_path, path_manager.to_build().style_path())?;
             } else {
-                println!("Warning: {} not found in root directory.", &config.filename.style);
+                println!("Warning: {} not found.", path_manager.style_path().display());
             }
 
             // Move script.js to build
-            let script_path = root_dir.join(&config.filename.script);
+            let script_path = path_manager.script_path();
             if script_path.exists() {
-                fs::copy(&script_path, to_build_path(&script_path, &config))?;
+                fs::copy(&script_path, path_manager.to_build().script_path())?;
                 println!("Copied {} to build.", script_path.display());
             } else {
-                println!("Warning: {} not found in root directory.", &config.filename.script);
+                println!("Warning: {} not found.", script_path.display());
             }
 
-            // Move fonts to build
-            let fonts_dir = PathBuf::from(&config.dir.fonts);
-            if !(fonts_dir.is_dir() && fonts_dir.exists()) {
-                println!("Warning: {} not found in root directory.", fonts_dir.display())
+            // Move default font to build
+            let default_font_dir = path_manager.default_font_dir();
+            if !(default_font_dir.is_dir() && default_font_dir.exists()) {
+                println!("Warning: {} not found.", default_font_dir.display());
             } else {
-                match &config.font.default {
-                    Some(default_font) => {
-                        let default_font_dir = fonts_dir.join(&default_font);
-                        if !(default_font_dir.is_dir() && default_font_dir.exists()) {
-                            println!("Warning: {} directory not found.", default_font_dir.display());
-                        } else {
-                            let default_font_paths: Vec<PathBuf> = fs::read_dir(&default_font_dir)?
-                                .flatten()
-                                .map(|entry| entry.path())
-                                .filter(|path| path.is_file())
-                                .collect();
+                let font_contents: Vec<PathBuf> = fs::read_dir(&default_font_dir)?
+                    .flatten()
+                    .map(|entry| entry.path())
+                    .filter(|path| path.is_file())
+                    .collect();
 
-                            let build_default_font_dir = to_build_path(&default_font_dir, &config);
-                            if !(build_default_font_dir.exists() && build_default_font_dir.is_dir()) {
-                                println!("Creating directory at {}", build_default_font_dir.display());
-                                fs::create_dir_all(build_default_font_dir)?;
-                            }
-                            for path in &default_font_paths {
-                                fs::copy(&path, to_build_path(&path, &config))?;
-                            }
-                        }
+                let build_default_font_dir = path_manager.to_build().default_font_dir();
+                if !(build_default_font_dir.exists() && build_default_font_dir.is_dir()) {
+                    println!("Creating directory at {}", build_default_font_dir.display());
+                    fs::create_dir_all(build_default_font_dir)?;
+                }
+                for path in &font_contents {
+                    fs::copy(&path, path_manager.to_build_path(&path))?;
+                }
 
-                        // Move default default-font.css to build
-                        let default_font_style_path = root_dir.join(&default_font).with_extension("css");
-                        if default_font_style_path.exists() {
-                            println!("Copying {} to build.", default_font_style_path.display());
-                            fs::copy(&default_font_style_path, to_build_path(&default_font_style_path, &config))?;
-                        } else {
-                            println!("Warning: {} not found.", default_font_style_path.display());
-                        }
-
-                    }
-                    None => {
-                        println!("Using default system fonts.");
+                // Move default default-font.css to build
+                if let Some(font_metadata) = font_metadata_factory.generate_default()? {
+                    
+                    let font_style_path = font_metadata.font_style_path();
+                    if font_style_path.exists() {
+                        println!("Copying {} to build.", font_style_path.display());
+                        fs::copy(&font_style_path, path_manager.to_build_path(&font_style_path))?;
+                    } else {
+                        println!("Warning: {} not found.", font_style_path.display());
                     }
                 }
             }
-            
+
+            // Move primary font to build
+            if let Some(primary_font_dir) = path_manager.primary_font_dir() {
+                if !(primary_font_dir.is_dir() && primary_font_dir.exists()) {
+                    println!("Warning: {} not found.", primary_font_dir.display());
+                } else {
+                    let font_contents: Vec<PathBuf> = fs::read_dir(&primary_font_dir)?
+                        .flatten()
+                        .map(|entry| entry.path())
+                        .filter(|path| path.is_file())
+                        .collect();
+
+                    if let Some(build_primary_font_dir) = path_manager.to_build().primary_font_dir() {
+                        if !(build_primary_font_dir.exists() && build_primary_font_dir.is_dir()) {
+                            println!("Creating directory at {}", build_primary_font_dir.display());
+                            fs::create_dir_all(build_primary_font_dir)?;
+                        }
+                        for path in &font_contents {
+                            fs::copy(&path, path_manager.to_build_path(&path))?;
+                        }
+                    }
+                    
+                    // Move primary primary-font.css to build
+                    if let Some(font_metadata) = font_metadata_factory.generate_primary()? {
+                        let font_style_path = font_metadata.font_style_path();
+                        if font_style_path.exists() {
+                            println!("Copying {} to build.", font_style_path.display());
+                            fs::copy(&font_style_path, path_manager.to_build_path(&font_style_path))?;
+                        } else {
+                            println!("Warning: {} not found.", font_style_path.display());
+                        }
+                    }
+                }
+            }
+
+            // Move secondary font to build
+            if let Some(secondary_font_dir) = path_manager.secondary_font_dir() {
+                if !(secondary_font_dir.is_dir() && secondary_font_dir.exists()) {
+                    println!("Warning: {} not found.", secondary_font_dir.display());
+                } else {
+                    let font_contents: Vec<PathBuf> = fs::read_dir(&secondary_font_dir)?
+                        .flatten()
+                        .map(|entry| entry.path())
+                        .filter(|path| path.is_file())
+                        .collect();
+
+                    if let Some(build_secondary_font_dir) = path_manager.to_build().secondary_font_dir() {
+                        if !(build_secondary_font_dir.exists() && build_secondary_font_dir.is_dir()) {
+                            println!("Creating directory at {}", build_secondary_font_dir.display());
+                            fs::create_dir_all(build_secondary_font_dir)?;
+                        }
+                        for path in &font_contents {
+                            fs::copy(&path, path_manager.to_build_path(&path))?;
+                        }
+                    }
+                    
+                    // Move secondary secondary-font.css to build
+                    if let Some(font_metadata) = font_metadata_factory.generate_secondary()? {
+                        let font_style_path = font_metadata.font_style_path();
+                        if font_style_path.exists() {
+                            println!("Copying {} to build.", font_style_path.display());
+                            fs::copy(&font_style_path, path_manager.to_build_path(&font_style_path))?;
+                        } else {
+                            println!("Warning: {} not found.", font_style_path.display());
+                        }
+                    }
+                }
+            }
 
             println!("Build successful.");
         }
