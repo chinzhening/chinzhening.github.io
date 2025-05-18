@@ -177,6 +177,7 @@ a {
     color: inherit;
     transition-property: background;
     transition-duration: 0.2s;
+    cursor: pointer;
 }
 
 a:hover {
