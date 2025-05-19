@@ -137,12 +137,6 @@ div.nav-wrap.right {
     right: 0;
 }
 
-@media (max-width: 750px) {
-  .nav-wrap {
-    display: none;
-  }
-}
-
 .side {
     top: 0;
     bottom: 0;
@@ -152,6 +146,13 @@ div.nav-wrap.right {
     transition-duration: 0.2s;
     border: solid 0px grey;
     position: fixed;
+}
+
+@media (max-width: 750px) {
+  div.nav-wrap, .side {
+    background-color: transparent;
+    width: 0;
+  }
 }
 
 #prev {
