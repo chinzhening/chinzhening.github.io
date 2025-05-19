@@ -117,7 +117,7 @@ p {
 
 .main-content {
     line-height: 1.45;
-    font-size: 0.9rem;
+    font-size: 0.9em;
 }
 
 div.nav-wrap {
@@ -287,7 +287,6 @@ p.block-equation {
 .toolbar, .font-menu {
     left: 0;
     right: 0;
-    max-width: 1000px;
     line-height: 1.25;
     font-size: 0.9rem;
     padding: 0.10em 0.25em 0.15em 0.25em;
@@ -304,7 +303,6 @@ p.block-equation {
         padding: 0.10em 0.25em 0.15em 0.25em;
     }
 }
-
 
 .font-menu {
     margin: auto;
