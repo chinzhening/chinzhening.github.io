@@ -85,7 +85,9 @@
         a(
           class: if go-prev != none {"nav"} else {"nav-hidden"},
           href: if go-prev != none {go-prev} else {""},
-          div(id: "prev", class: "side", "")
+          div(id: "prev", class: "side",
+            span("↤")
+          )
         )
       }
     }
@@ -97,7 +99,9 @@
         a(
           class: if go-next != none {"nav"} else {"nav-hidden"},
           href: if go-next != none {go-next} else {""},
-          div(id: "next", class: "side", "")
+          div(id: "next", class: "side",
+            span("↦")
+          )
         )
       }
     }

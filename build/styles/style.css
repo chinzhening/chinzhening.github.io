@@ -121,43 +121,55 @@ p {
 }
 
 div.nav-wrap {
-    top:0;
+    top: 0;
     bottom: 0;
-    width: 5rem;
+    width: 2rem;
     position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: -1000; /* ensure it’s on top */
 }
 
 div.nav-wrap.left {
-    margin-left: 1rem;
     left: 0;
 }
 
 div.nav-wrap.right {
-    margin-right: 1rem;
     right: 0;
 }
 
-.side {
-    top: 0;
-    bottom: 0;
-    width: 5rem;
-    z-index: -1000;
-    transition-property: border-color;
-    transition-duration: 0.2s;
-    border: solid 0px grey;
-    position: fixed;
+.nav {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    pointer-events: auto;
 }
 
-@media (max-width: 750px) {
-  div.nav-wrap, .side {
-    background-color: transparent;
-    width: 0;
-  }
+.side {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    position: relative; /* was fixed — now relative to .nav */
+    border: solid 0px grey;
+    transition: border-color 0.2s;
+}
+
+.side span {
+    color: #999;
+    font-size: 1rem;
+    pointer-events: none; /* so the arrow doesn’t intercept clicks */
 }
 
 #prev {
     left: 0;
-    border-left: 1rem solid white;
+    border-left: 0rem solid white;
 }
 
 #prev:hover {
@@ -166,12 +178,32 @@ div.nav-wrap.right {
 
 #next {
     right: 0;
-    border-right: 1rem solid white;
+    border-right: 0rem solid white;
 }
 
 #next:hover {
     border-right-color: #fcf6f6;
 }
+
+@media (max-width: 750px) {
+  div.nav-wrap, .side {
+    background-color: transparent;
+    width: 0;
+  }
+
+  .side span {
+    display: none;
+  }
+
+  #prev {
+    border-left: 2rem solid white;
+  }
+
+  #next {
+    border-right: 2rem solid white;
+  }
+}
+
 
 a {
     text-decoration: none;
@@ -189,7 +221,8 @@ a:hover {
     border-radius: 8px;
 }
 
-div.nav-wrap a:active div { background: #fdfdfd;
+div.nav-wrap a:active div {
+    background: #fdfdfd;
 }
 
 a:active { color: #777; }
@@ -247,12 +280,13 @@ p.block-equation {
     z-index: 1;
     top: 0;
     opacity: 1;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
 }
 
 .toolbar, .font-menu {
-    margin: auto;
-    left: 2.5rem;
-    right: 2.5rem;
+    left: 0;
+    right: 0;
     max-width: 1000px;
     line-height: 1.25;
     font-size: 0.9rem;
@@ -260,7 +294,7 @@ p.block-equation {
 }
 
 @media (max-width: 750px) {
-    .toolbar, .font-menu {
+    .toolbar {
         margin: auto;
         left: 0;
         right: 0;
@@ -269,10 +303,11 @@ p.block-equation {
         font-size: 0.9rem;
         padding: 0.10em 0.25em 0.15em 0.25em;
     }
-
 }
 
+
 .font-menu {
+    margin: auto;
     box-sizing: border-box;
     display: inline-block;
 }
