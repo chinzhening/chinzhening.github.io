@@ -2,7 +2,7 @@
 root:
   dir: "."
   index: "index.typ"
-  script: "script.js"
+  script: "script.ts"
 build:
   dir: "build"
 fonts:
