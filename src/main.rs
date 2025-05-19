@@ -39,8 +39,8 @@ fn make_html(file_path: &PathBuf, path_manager: &path_manager::PathManager) -> R
             build_path.to_str().unwrap(),
             "--features", "html",
             "--root", path_manager.root().to_str().unwrap(),
-            "--input", &format!("posts-metadata-path=\\{}", path_manager.posts_metadata_path().to_str().unwrap()),
-            "--input", &format!("fonts-metadata-path=\\{}", path_manager.fonts_metadata_path().to_str().unwrap())
+            "--input", &format!("posts-metadata-path=/{}", path_manager.posts_metadata_path().to_str().unwrap()),
+            "--input", &format!("fonts-metadata-path=/{}", path_manager.fonts_metadata_path().to_str().unwrap())
         ])
         .output()?;
     if !output.status.success() {
@@ -50,6 +50,18 @@ fn make_html(file_path: &PathBuf, path_manager: &path_manager::PathManager) -> R
     Ok(())
 }
 
+fn make_js(file_path: &PathBuf, path_manager: &path_manager::PathManager) -> Result<(), Box<dyn std::error::Error>> {
+    let build_path: PathBuf = path_manager.to_build_path(&file_path).with_extension("js");
+
+    let output = Command::new("tsc")
+        .args([file_path.to_str().unwrap(), "--outFile", build_path.to_str().unwrap()])
+        .output()?;
+
+    if !output.status.success() {
+        return Err(format!("{}", String::from_utf8_lossy(&output.stderr)).into());
+    }
+    Ok(())
+}
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
@@ -133,8 +145,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             // Move script.js to build
             let script_path = path_manager.script_path();
             if script_path.exists() {
-                fs::copy(&script_path, path_manager.to_build().script_path())?;
-                println!("Copied {} to build.", script_path.display());
+                make_js(&script_path, &path_manager)?;
+                println!("Compiled {} to build.", script_path.display());
             } else {
                 println!("Warning: {} not found.", script_path.display());
             }
