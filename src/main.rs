@@ -107,9 +107,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             make_html(&index_path, &path_manager)?;
 
             // Generate post.html to build
-            for path  in path_manager.post_paths()? {
+            for path in path_manager.posts_paths()? {
                 if let Err(e) = make_html(&path, &path_manager) {
                     eprintln!("Failed to compile {}: {}", path.display(), e);
+                }
+            }
+
+            // Move assets to build
+            for path in path_manager.assets_paths()? {
+                if let Err(e) = fs::copy(&path, &path_manager.to_build_path(&path)) {
+                    eprintln!("Failed to move {}: {}", path.display(), e);
                 }
             }
 

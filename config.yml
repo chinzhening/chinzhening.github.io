@@ -2,7 +2,6 @@
 root:
   dir: "."
   index: "index.typ"
-  style: "style.css"
   script: "script.js"
 build:
   dir: "build"
@@ -20,3 +19,5 @@ posts:
 styles:
   dir: "styles"
   style: "style.css"
+assets:
+  dir: "assets"

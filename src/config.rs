@@ -11,6 +11,7 @@ pub struct Config {
     meta: MetaConfig,
     posts: PostsConfig,
     styles: StylesConfig,
+    assets: AssetsConfig,
 }
 
 #[derive(Debug, PartialEq, Deserialize, Clone)]
@@ -18,6 +19,11 @@ struct RootConfig {
     dir: String,
     index: String,
     script: String,
+}
+
+#[derive(Debug, PartialEq, Deserialize, Clone)]
+struct AssetsConfig {
+    dir: String,
 }
 
 #[derive(Debug, PartialEq, Deserialize, Clone)]
@@ -66,6 +72,7 @@ impl Config {
     pub fn get_dirs(&self) -> Vec<String> {
         return vec![
             self.posts.dir.clone(),
+            self.assets.dir.clone(),
             self.build.dir.clone(),
             self.fonts.dir.clone(),
             self.meta.dir.clone(),
@@ -76,9 +83,14 @@ impl Config {
     pub fn get_build_dirs(&self) -> Vec<String> {
         return vec![
             self.posts.dir.clone(),
+            self.assets.dir.clone(),
             self.fonts.dir.clone(),
             self.styles.dir.clone(),
         ]
+    }
+
+    pub fn get_assets_dir(&self) -> String {
+        return self.assets.dir.clone();
     }
 
     pub fn get_build_dir(&self) -> String {

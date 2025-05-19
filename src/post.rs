@@ -64,10 +64,10 @@ impl <'a> PostMetadataFactory<'a> {
 
     // Generate all metadata for post.typ files
     pub fn generate_metadata(&self) -> Result<(), Box<dyn std::error::Error>> {
-        let post_paths: Vec<PathBuf> = self.path_manager.post_paths()?;
+        let posts_paths: Vec<PathBuf> = self.path_manager.posts_paths()?;
         
         let post_metadata: Vec<PostMetadata> =
-            post_paths
+            posts_paths
                 .iter()
                 .filter_map(|path| self.create_metadata(&path).ok())
                 .collect();

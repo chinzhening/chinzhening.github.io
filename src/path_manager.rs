@@ -54,6 +54,10 @@ impl PathManager {
         self.build_dir().join(path)
     }
 
+    pub fn assets_dir(&self) -> PathBuf {
+        self.root.join(self.config.get_assets_dir())
+    }
+
     pub fn build_dir(&self) -> PathBuf {
         self.root.join(self.config.get_build_dir())
     }
@@ -86,7 +90,7 @@ impl PathManager {
         self.root.join(self.config.get_script())
     }
 
-    pub fn post_paths(&self) -> Result<Vec<PathBuf>, Box<dyn std::error::Error>> {
+    pub fn posts_paths(&self) -> Result<Vec<PathBuf>, Box<dyn std::error::Error>> {
         let post_paths: Vec<PathBuf> = fs::read_dir(self.posts_dir())?
             .flatten()
             .map(|entry| entry.path())
@@ -94,6 +98,15 @@ impl PathManager {
             .filter(utility::is_typ)
             .collect();
         Ok(post_paths)
+    }
+
+    pub fn assets_paths(&self) -> Result<Vec<PathBuf>, Box<dyn std::error::Error>> {
+        let assets_paths: Vec<PathBuf> = fs::read_dir(self.assets_dir())?
+            .flatten()
+            .map(|entry| entry.path())
+            .filter(|path| path.is_file())
+            .collect();
+        Ok(assets_paths)
     }
 
     pub fn posts_metadata_path(&self) -> PathBuf {
