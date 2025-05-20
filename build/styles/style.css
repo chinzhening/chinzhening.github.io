@@ -397,3 +397,14 @@ body.dark a:hover {
 body.dark .title-block {
     border-top: 3px solid var(--white);
 }
+
+body.dark ::selection {
+  background-color: var(--medium-gray);
+  color: inherit; /* optional: keep text color as is */
+}
+
+/* text highlighting */
+::selection {
+  background-color: var(--light-gray);
+  color: inherit; /* optional: keep text color as is */
+}
