@@ -100,6 +100,8 @@
 #let h1 = html-elem.with(tag: "h1")
 #let h2 = html-elem.with(tag: "h2")
 
+#let button = html-elem.with(tag: "button")
+
 #let div-frame(content, attrs: (:), tag: "div") = html.elem(tag, html.frame(content), attrs: attrs)
 #let span-frame = div-frame.with(tag: "span")
 #let p-frame = div-frame.with(tag: "p")

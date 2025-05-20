@@ -26,6 +26,14 @@
   )
 }
 
+#let dark-mode-button = {
+  span(
+    id: "darkModeToggle",
+    onclick: "toggleDarkMode()",
+    "Toggle Dark Mode",
+  )
+}
+
 #let font-script = {
   let default = fonts-metadata.at(0)
   script({
@@ -69,6 +77,7 @@
       fonts-metadata
         .map(font-item)
         .join()
+      dark-mode-button
     }
   )
 }

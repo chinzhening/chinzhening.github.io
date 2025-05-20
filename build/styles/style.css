@@ -211,14 +211,14 @@ a {
     transition-property: background;
     transition-duration: 0.2s;
     cursor: pointer;
+
+    border-radius: 8px;
 }
 
 a:hover {
-    background: #fbf3f3;
+    background: rgb(251, 243, 243);
     transition-property: background;
     transition-duration: 0.2s;
-
-    border-radius: 8px;
 }
 
 div.nav-wrap a:active div {
@@ -318,4 +318,67 @@ p.block-equation {
 
 .font-toggle:hover, .font-toggle.active {
     color: black;
+}
+
+/* SVG styling */
+.typst-doc * {
+    fill: currentColor;
+}
+
+path.typst-shape {
+    stroke: currentColor;
+}
+
+/* Adjust for dark mode */
+body.dark {
+  background-color: #111;
+  color: #fff;
+}
+
+body.dark .toolbar {
+  background-color: #000;
+  color: #fff;
+}
+
+
+/* Inline dark mode toggle button */
+#darkModeToggle {
+  background-color: #000;
+  color: #fff;
+
+  padding: 0.2rem;
+  transition: color 0.2s ease;
+  cursor: pointer;
+
+  border-radius: 8px;
+}
+
+/* Inline dark mode toggle button */
+#darkModeToggle.dark {
+  background-color: #fff;
+  color: #000;
+
+  padding: 0.2rem;
+  transition: color 0.3s ease;
+  cursor: pointer;
+
+  border-radius: 8px;
+}
+
+#darkModeToggle:hover {
+  color: #999;
+}
+
+body.dark .font-toggle:hover, body.dark .font-toggle.active {
+    color: #fff;
+}
+
+body.dark a:hover {
+    background: rgb(251, 243, 243, 0.2);
+    transition-property: background;
+    transition-duration: 0.2s;
+}
+
+body.dark .title-block {
+    border-top: 3px solid #ddd;
 }
