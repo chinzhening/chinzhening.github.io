@@ -15,7 +15,7 @@
     <script>
 // Font Toggling
 window.addEventListener("load", event => {
-  const default_font_class = "font--crimson-pro";
+  const default_font_class = "font--roboto";
   setBodyText(localStorage.getItem("activeFont") || default_font_class);
 })
 
@@ -38,13 +38,11 @@ function setBodyText(toggle_class) {
 function handleFontChange(evt) {
   setBodyText(evt.id);
 }</script>
-    <link rel="preload" as="style" href="/styles/crimson-pro.css" onload="this.rel='stylesheet'">
-    <link rel="preload" as="style" href="/styles/noto-serif.css" onload="this.rel='stylesheet'">
     <link rel="preload" as="style" href="/styles/roboto.css" onload="this.rel='stylesheet'">
     <meta name="description" content="The project so far.">
   </head>
   <body>
-    <div class="toolbar"><span class="font-menu"><a class="font-toggle active" id="font--crimson-pro" onmousedown="event.stopPropagation()" onclick="handleFontChange(this)">Crimson Pro</a></span><span class="font-menu"><a class="font-toggle" id="font--noto-serif" onmousedown="event.stopPropagation()" onclick="handleFontChange(this)">Noto Serif</a></span><span class="font-menu"><a class="font-toggle" id="font--roboto" onmousedown="event.stopPropagation()" onclick="handleFontChange(this)">Roboto</a></span><span id="darkModeToggle" onclick="toggleDarkMode()">Dark Mode</span></div>
+    <div class="toolbar"><span class="font-menu"><a class="font-toggle active" id="font--roboto" onmousedown="event.stopPropagation()" onclick="handleFontChange(this)">Roboto</a></span><span id="darkModeToggle" onclick="toggleDarkMode()">Dark Mode</span></div>
     <div class="main-content">
       <div class="post-document">
         <div class="title-block">

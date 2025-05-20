@@ -7,9 +7,9 @@ build:
   dir: "build"
 fonts:
   dir: "fonts"
-  default: "crimson-pro"
-  primary: "noto-serif"
-  secondary: "roboto"
+  default: "roboto"
+  primary:
+  secondary:
 meta:
   dir: "meta"
   posts: "posts.json"
