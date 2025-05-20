@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/script.js"></script>
+    <link rel="icon" href="/assets/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" href="/assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/android-chrome-512x512.png">
+    <link rel="manifest" href="/assets/site.webmanifest">
+    <link rel="stylesheet" media="all" href="/styles/style.css">
+    <script>
+// Font Toggling
+window.addEventListener("load", event => {
+  const default_font_class = "font--crimson-pro";
+  setBodyText(localStorage.getItem("activeFont") || default_font_class);
+})
+
+function setBodyText(toggle_class) {
+  console.log(`setting body text to ${toggle_class}`);
+  
+  Array.from(document.body.classList)
+  .filter(name => name.startsWith("font--"))
+  .map(name => document.body.classList.remove(name));
+  document.body.classList.add(toggle_class)
+
+  Array.from(document.getElementsByClassName("font-toggle"))
+  .map(el => el.classList.remove("active"));
+  document.getElementById(toggle_class).classList.add("active");
+
+  localStorage.setItem('activeFont', toggle_class)
+
+}
+
+function handleFontChange(evt) {
+  setBodyText(evt.id);
+}</script>
+    <link rel="preload" as="style" href="/styles/crimson-pro.css" onload="this.rel='stylesheet'">
+    <link rel="preload" as="style" href="/styles/noto-serif.css" onload="this.rel='stylesheet'">
+    <link rel="preload" as="style" href="/styles/roboto.css" onload="this.rel='stylesheet'">
+    <meta name="description" content="The project so far.">
+  </head>
+  <body>
+    <div class="toolbar"><span class="font-menu"><a class="font-toggle active" id="font--crimson-pro" onmousedown="event.stopPropagation()" onclick="handleFontChange(this)">Crimson Pro</a></span><span class="font-menu"><a class="font-toggle" id="font--noto-serif" onmousedown="event.stopPropagation()" onclick="handleFontChange(this)">Noto Serif</a></span><span class="font-menu"><a class="font-toggle" id="font--roboto" onmousedown="event.stopPropagation()" onclick="handleFontChange(this)">Roboto</a></span><span id="darkModeToggle" onclick="toggleDarkMode()">Dark Mode</span></div>
+    <div class="main-content">
+      <div class="post-document">
+        <div class="title-block">
+          <div class="title">Week 1</div>
+          <div class="desc">The project so far.</div>
+          <div class="date">updated: 2025-05-21</div>
+          <div class="tags">tags: typst, rust, blog-engine, dev-log</div>
+        </div>
+        <h2>Building ssg: A Static Site Generator in Typst and Rust</h2>
+        <h3>Introduction</h3>
+        <p>ssg is a static site generator built using Typst and <a href="https://www.rust-lang.org/">Rust</a>. It transforms content written in <a href="https://typst.app/">Typst</a> into a polished, publishable website. By building on top of Typst's CLI-based HTML export, ssg aims to become a fully-featured blogging engine—something akin to <a href="https://jekyllrb.com/">Jekyll</a> or <a href="https://gohugo.io/">Hugo</a>, but with Typst as the authoring language at its core.</p>
+        <p>The motivation behind ssg is to offer a more modern and flexible publishing workflow for Typst users, especially writers and developers who want to take advantage of static site generation without locking themselves into rigid structures.</p>
+        <h3>Development Logs</h3>
+        <p>After a week of development, it's clear that ssg is just getting started. While the foundational pieces are in place, there's a lot left to build—and a lot to rethink.</p>
+        <p>One of the growing pains right now is the code structure. The current implementation is tightly coupled with the specific site structure I initially adopted. This makes the system inflexible and goes against one of the core goals for ssg: being <em>structure-agnostic</em>. To be truly customizable, ssg needs to allow users to define their own layouts and organizational patterns without being constrained by the generator itself.</p>
+        <p>Another essential feature is hot reloading. It's a must-have for any content-heavy workflow—particularly when drafting new blog posts or testing layout tweaks. Ideally, only changed files are rebuilt, dramatically speeding up development and preview cycles.</p>
+        <p>That said, I've already learned a lot in just one week of building ssg.</p>
+        <p>One thing that's stood out is how enjoyable Typst is to work with. Its clean syntax and expressive capabilities make it a pleasure for writing structured content. In fact, that's a big part of why I'm committed to making ssg work—Typst deserves a solid publishing pipeline.</p>
+        <p>Working around the current limitations of the Typst CLI has been a challenge. Many tasks require scripting and external tooling, since the CLI wasn't originally designed with full-fledged site generation in mind. One specific issue is how inline SVGs are handled: by default, they're not properly sized for dynamic resizing when the DOM content loads, and styling them for dark mode compatibility isn't straightforward.</p>
+        <p>These kinds of challenges highlight the need for a more intelligent build process. For instance, I'm planning to improve SVG compatibility—which are needed to display math equations—through <a href="https://cloudinary.com/guides/image-formats/a-developers-guide-to-svg-optimization">minification</a> and smarter rendering during the build. These are the kinds of behind-the-scenes improvements that can make a big difference in how Typst content looks and performs on the web.</p>
+        <h3>Roadmap</h3>
+        <p>Below is a tentative roadmap for ssg. It's by no means complete but reflects the current direction of the project:</p>
+        <ul>
+          <li>SCSS support - Stylize your site using modular, maintainable CSS.</li>
+          <li>Image support - Native handling of image assets.</li>
+          <li>Image &amp; SVG compression - Optimize assets for the web without losing quality.</li>
+          <li>Contacts page - Basic support for contact forms or profile info.</li>
+          <li>Decoupled build system - Separate the generator logic from the build pipeline, with deployment via a gh-pages branch.</li>
+          <li>Hot reloading in dev mode - Automatically update the preview when files change.</li>
+          <li>new command - Quickly scaffold new posts or sections from the CLI.</li>
+          <li>Embeddable content - Support for rich embeds like tweets, videos, and code snippets.</li>
+          <li>Component library - A flexible set of reusable Typst components for layouts and themes.</li>
+          <li>Theme ecosystem - Pre-built themes to jumpstart site creation.</li>
+        </ul>
+        <h3>Get Involved</h3>
+        <p>While still early in development, ssg is evolving quickly. If you're interested in static site generation, Rust, or Typst—or if you just want a simpler way to publish content—feel free to follow the project and contribute ideas or code.</p>
+        <p>Stay tuned for updates as ssg grows into a tool that makes publishing with Typst not just possible, but powerful and fun.</p>
+      </div>
+    </div>
+    <div class="nav-wrap left"><a class="nav" href="/index.html"><div id="prev" class="side"><span>↤</span></div></a></div>
+    <div class="nav-wrap right"></div>
+  </body>
+</html>
