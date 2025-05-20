@@ -30,17 +30,18 @@ document.addEventListener('DOMContentLoaded', () => {
 // Apply default, light, or dark mode
 window.addEventListener("load", event => {
     const userPreference = localStorage.getItem("theme");
-    const darkModeToggle = document.getElementById("darkModeToggle");
 
     if (userPreference) {
-        document.body.classList.add(userPreference);
+        if (userPreference === "dark") {
+            document.body.classList.add("dark");
+        } else {
+            document.body.classList.remove("dark");
+        }
     } else {
         if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
             document.body.classList.add("dark");
-            if (darkModeToggle) darkModeToggle.classList.add("dark");
         } else {
-            document.body.classList.add("light");
-            if (darkModeToggle) darkModeToggle.classList.add("light");
+            document.body.classList.remove("dark");
         }
     }
 });
@@ -50,14 +51,6 @@ function toggleDarkMode() {
     const isDark = document.body.classList.contains("dark");
 
     document.body.classList.toggle("dark", !isDark);
-    document.body.classList.toggle("light", isDark);
-
-    const darkModeToggle = document.getElementById("darkModeToggle");
-
-    if (darkModeToggle) {
-        darkModeToggle.classList.toggle("dark", !isDark);
-        darkModeToggle.classList.toggle("light", isDark);
-    }
 
     localStorage.setItem("theme", isDark ? "light" : "dark");
 }

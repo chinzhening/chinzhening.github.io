@@ -1,3 +1,17 @@
+:root {
+    --white: rgba(250, 250, 250, 1);
+    --black: rgba(28, 28, 28, 1);
+
+    --light-gray: rgba(224, 224, 224, 1);
+    --medium-gray: rgba(158, 158, 158, 1);
+
+    --link-hover-bg: rgba(251, 243, 243, 1);
+    --link-active-color: rgba(119, 119, 119, 1);
+
+    --dark-hover-bg: rgba(251, 243, 243, 0.2);
+}
+
+
 html { font-size: 2.4vw; }
 
 @media all and (min-width: 1000px) { html { font-size: 24px; } }
@@ -20,6 +34,7 @@ body {
     min-height: 100%;
     position: relative;
     z-index: -10000;
+    background-color: var(--white);
 }
 
 div.main-content {
@@ -46,7 +61,7 @@ div.main-content {
     text-align: right;
     list-style-type: none;
     clear: both;
-    border-top: 3px solid #333;
+    border-top: 3px solid var(--black);
 }
 
 @media all and (max-width: 750px) {
@@ -157,32 +172,32 @@ div.nav-wrap.right {
     width: 100%;
     height: 100%;
     position: relative; /* was fixed — now relative to .nav */
-    border: solid 0px grey;
+    border: solid 0px var(--light-gray);
     transition: border-color 0.2s;
 }
 
 .side span {
-    color: #999;
+    color: var(--light-gray);
     font-size: 1rem;
     pointer-events: none; /* so the arrow doesn’t intercept clicks */
 }
 
 #prev {
     left: 0;
-    border-left: 0rem solid white;
+    border-left: 0rem solid var(--white);
 }
 
 #prev:hover {
-    border-left-color: #fcf6f6;
+    border-left-color: var(--link-hover-bg);
 }
 
 #next {
     right: 0;
-    border-right: 0rem solid white;
+    border-right: 0rem solid var(--white);
 }
 
 #next:hover {
-    border-right-color: #fcf6f6;
+    border-right-color: var(--link-hover-bg);
 }
 
 @media (max-width: 750px) {
@@ -196,11 +211,11 @@ div.nav-wrap.right {
   }
 
   #prev {
-    border-left: 2rem solid white;
+    border-left: 2rem solid var();
   }
 
   #next {
-    border-right: 2rem solid white;
+    border-right: 2rem solid var(--white);
   }
 }
 
@@ -216,16 +231,16 @@ a {
 }
 
 a:hover {
-    background: rgb(251, 243, 243);
+    background: var(--link-hover-bg);
     transition-property: background;
     transition-duration: 0.2s;
 }
 
 div.nav-wrap a:active div {
-    background: #fdfdfd;
+    background: var(--link-hover-bg);
 }
 
-a:active { color: #777; }
+a:active { color: var(--link-active-color); }
 
 
 /* Scrolling Options */
@@ -274,7 +289,7 @@ p.block-equation {
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    background-color: #fff;
+    background-color: var(--white);
     clear: both;
     position: fixed;
     z-index: 1;
@@ -289,6 +304,9 @@ p.block-equation {
     right: 0;
     line-height: 1.25;
     font-size: 0.9rem;
+}
+
+.font-menu {
     padding: 0.10em 0.25em 0.15em 0.25em;
 }
 
@@ -312,12 +330,12 @@ p.block-equation {
 
 .font-toggle {
     display: inline-block;
-    color: #999;
+    color: var(--medium-gray);
     padding: 0.2em;
 }
 
 .font-toggle:hover, .font-toggle.active {
-    color: black;
+    color: var(--black);
 }
 
 /* SVG styling */
@@ -331,54 +349,51 @@ path.typst-shape {
 
 /* Adjust for dark mode */
 body.dark {
-  background-color: #111;
-  color: #fff;
+  background-color: var(--black);
+  color: var(--white);
 }
 
 body.dark .toolbar {
-  background-color: #000;
-  color: #fff;
+  background-color: var(--black);
+  color: var(--white);
 }
 
 
 /* Inline dark mode toggle button */
+/* Default toggle style */
 #darkModeToggle {
-  background-color: #000;
-  color: #fff;
-
   padding: 0.2rem;
-  transition: color 0.2s ease;
   cursor: pointer;
-
   border-radius: 8px;
+  display: inline-block;
 }
 
-/* Inline dark mode toggle button */
-#darkModeToggle.dark {
-  background-color: #fff;
-  color: #000;
+/* Light theme */
+body:not(.dark) #darkModeToggle {
+  background-color: var(--black);
+  color: var(--white);
+}
 
-  padding: 0.2rem;
-  transition: color 0.3s ease;
-  cursor: pointer;
-
-  border-radius: 8px;
+/* Dark theme */
+body.dark #darkModeToggle {
+  background-color: var(--white);
+  color: var(--black);
 }
 
 #darkModeToggle:hover {
-  color: #999;
+  color: var(--medium-gray);
 }
 
 body.dark .font-toggle:hover, body.dark .font-toggle.active {
-    color: #fff;
+    color: var(--white);
 }
 
 body.dark a:hover {
-    background: rgb(251, 243, 243, 0.2);
+    background: var(--dark-hover-bg);
     transition-property: background;
     transition-duration: 0.2s;
 }
 
 body.dark .title-block {
-    border-top: 3px solid #ddd;
+    border-top: 3px solid var(--white);
 }

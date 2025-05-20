@@ -30,7 +30,7 @@
   span(
     id: "darkModeToggle",
     onclick: "toggleDarkMode()",
-    "Toggle Dark Mode",
+    "Dark Mode",
   )
 }
 
