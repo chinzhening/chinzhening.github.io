@@ -33,24 +33,22 @@ window.addEventListener("load", event => {
 
     if (userPreference) {
         if (userPreference === "dark") {
-            document.body.classList.add("dark");
+            document.documentElement.classList.add("dark");
         } else {
-            document.body.classList.remove("dark");
+            document.documentElement.classList.remove("dark");
         }
     } else {
         if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            document.body.classList.add("dark");
+            document.documentElement.classList.add("dark");
         } else {
-            document.body.classList.remove("dark");
+            document.documentElement.classList.remove("dark");
         }
     }
 });
 
 function toggleDarkMode() {
     console.log(`Toggling dark mode`);
-    const isDark = document.body.classList.contains("dark");
-
-    document.body.classList.toggle("dark", !isDark);
-
+    const isDark = document.documentElement.classList.contains("dark");
+    document.documentElement.classList.toggle("dark", !isDark);
     localStorage.setItem("theme", isDark ? "light" : "dark");
 }
