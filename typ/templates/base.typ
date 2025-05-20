@@ -86,6 +86,12 @@
   /// Not Implemented
 }
 
+/// horizontal line
+#let line = div(
+  class: "line",
+  "",
+)
+
 #let navigation(go-prev: none, go-next: none) = {
   div(
     class: "nav-wrap left",
@@ -134,7 +140,6 @@
     "/base.html",
   )
 
-  /// TODO: inline math and display math block support
   show math.equation.where(block: true): p-frame.with(
     attrs: (class: "block-equation")
   )

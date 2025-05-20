@@ -36,7 +36,17 @@
               div(class: "title", title)
               div(class: "desc", description)
               div(class: "date", "updated: " + date)
-              div(class: "tags", "tags: " + tags.join(", "))
+              div(
+                class: "tags",
+                "tags: " + tags.map(
+                  tg => {
+                    span(
+                      class: "tag",
+                      "#" + tg
+                      )
+                  }
+                ).join(", ")
+              )
             }
           )
           content

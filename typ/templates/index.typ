@@ -9,14 +9,29 @@
   div(
     class: "post-item",
     {
-      a(href: href, title)
+      a(
+        class: "post-title",
+        href: href,
+        title)
 
       div(
         class: "post-prop",
         {
-          "published: " + date
-          " "
-          "tags: " + tags.join(", ")
+          div(
+            class: "post-date",
+            "published: " + date
+            )
+          div(
+            class: "post-tag-container",
+            "tags: " + tags.map(
+              tg => {
+                span(
+                  class: "post-tag",
+                  "#" + tg
+                  )
+              }
+            ).join(", ")
+          )
         },
       )
       div(

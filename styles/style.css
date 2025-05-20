@@ -1,16 +1,34 @@
 :root {
-    --white: rgba(250, 250, 250, 1);
-    --black: rgba(28, 28, 28, 1);
-
+    --bg-color: rgba(250, 250, 250, 1);
+    --main-color: rgba(28, 28, 28, 1);
+    --neutral-gray: rgba(112, 112, 112, 1);
     --light-gray: rgba(224, 224, 224, 1);
     --medium-gray: rgba(158, 158, 158, 1);
-
-    --link-hover-bg: rgba(251, 243, 243, 1);
+    --main-hover-color: rgba(251, 243, 243, 1);
     --link-active-color: rgba(119, 119, 119, 1);
+    --dark-mode-bg-color: rgba(28, 28, 28, 1);
+    --dark-mode-main-color: rgba(250, 250, 250, 1);
+    --accent-blue: rgba(59, 130, 246, 1);
+    --accent-purple: rgba(221, 214, 254, 1);
 
-    --dark-hover-bg: rgba(251, 243, 243, 0.2);
+    --link-color: rgba(88, 86, 214, 1);
 }
 
+:root.dark {
+    --bg-color: rgba(28, 28, 28, 1);
+    --main-color: rgba(250, 250, 250, 1);
+    --neutral-gray: rgba(112, 112, 112, 1);
+    --light-gray: rgba(224, 224, 224, 1);
+    --medium-gray: rgba(158, 158, 158, 1);
+    --main-hover-color: rgba(251, 243, 243, 0.2);
+    --link-active-color: rgba(119, 119, 119, 1);
+    --dark-mode-bg-color: rgba(250, 250, 250, 1);
+    --dark-mode-main-color: rgba(28, 28, 28, 1);
+    --accent-blue: rgba(96, 165, 250, 1);
+    --accent-purple: rgba(180, 165, 255, 1);
+
+    --link-color: rgba(180, 165, 255, 1);
+}
 
 html { font-size: 2.4vw; }
 
@@ -34,7 +52,8 @@ body {
     min-height: 100%;
     position: relative;
     z-index: -10000;
-    background-color: var(--white);
+    background-color: var(--bg-color);
+    color: var(--main-color);
 }
 
 div.main-content {
@@ -61,7 +80,7 @@ div.main-content {
     text-align: right;
     list-style-type: none;
     clear: both;
-    border-top: 3px solid var(--black);
+    border-top: 3px solid var(--main-color);
 }
 
 @media all and (max-width: 750px) {
@@ -114,20 +133,23 @@ ol, ul {
 /* Heading Options */
 
 h2 {
-  font-size: 1.5em;
+  font-size: 2em;
+  margin-bottom: 0.25rem;
 }
 h3 {
-  font-size: 1.17em;
+  font-size: 1.5em;
+  margin-bottom: 0.1rem;
 }
 h4 {
-  font-size: 1em;
+  font-size: 1.25em;
+  margin-bottom: 0.05rem;
 }
 h5 {
-  font-size: 0.83em;
+  font-size: 1em;
 }
 
-p {
-    margin-bottom: 1em;
+.main-content p {
+    margin-bottom: 0.75em;
 }
 
 .main-content {
@@ -177,33 +199,33 @@ div.nav-wrap.right {
 }
 
 .side span {
-    color: var(--light-gray);
+    color: var(--neutral-gray);
     font-size: 1rem;
     pointer-events: none; /* so the arrow doesn’t intercept clicks */
 }
 
 #prev {
     left: 0;
-    border-left: 0rem solid var(--white);
+    border-left: 0rem solid var(--bg-color);
 }
 
 #prev:hover {
-    border-left-color: var(--link-hover-bg);
+    border-left-color: var(--main-hover-color);
 }
 
 #next {
     right: 0;
-    border-right: 0rem solid var(--white);
+    border-right: 0rem solid var(--bg-color);
 }
 
 #next:hover {
-    border-right-color: var(--link-hover-bg);
+    border-right-color: var(--main-hover-color);
 }
 
 @media (max-width: 750px) {
   div.nav-wrap, .side {
     background-color: transparent;
-    width: 0;
+    width: 10px;
   }
 
   .side span {
@@ -215,14 +237,14 @@ div.nav-wrap.right {
   }
 
   #next {
-    border-right: 2rem solid var(--white);
+    border-right: 2rem solid var(--bg-color);
   }
 }
 
 
 a {
     text-decoration: none;
-    color: inherit;
+    color: var(--link-color);
     transition-property: background;
     transition-duration: 0.2s;
     cursor: pointer;
@@ -231,16 +253,22 @@ a {
 }
 
 a:hover {
-    background: var(--link-hover-bg);
+    background: var(--main-hover-color);
     transition-property: background;
     transition-duration: 0.2s;
 }
 
-div.nav-wrap a:active div {
-    background: var(--link-hover-bg);
+a:visited {
+    color: var(--neutral-gray);
 }
 
-a:active { color: var(--link-active-color); }
+div.nav-wrap a:active div {
+    background: var(--main-hover-color);
+}
+
+a:active {
+    color: var(--link-active-color);
+}
 
 
 /* Scrolling Options */
@@ -270,14 +298,19 @@ p.block-equation {
 }
 
 .post-item p {
-    padding-top: 5px;
-    margin-bottom: 0.5rem;
-    text-decoration: underline;
-    text-underline-offset: 2px;
+    margin-bottom: 0rem;
 }
 
-.post-prop {
+.post-title {
+    font-size: 1.25em;
+}
+
+.post-prop, .post-desc {
     font-style: italic;
+}
+
+.post-tag, .tag {
+    color: var(--link-color);
 }
 
 .about-me {
@@ -289,7 +322,7 @@ p.block-equation {
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    background-color: var(--white);
+    background-color: var(--bg-color);
     clear: both;
     position: fixed;
     z-index: 1;
@@ -335,7 +368,7 @@ p.block-equation {
 }
 
 .font-toggle:hover, .font-toggle.active {
-    color: var(--black);
+    color: var(--main-color);
 }
 
 /* SVG styling */
@@ -347,19 +380,6 @@ path.typst-shape {
     stroke: currentColor;
 }
 
-/* Adjust for dark mode */
-body.dark {
-  background-color: var(--black);
-  color: var(--white);
-}
-
-body.dark .toolbar {
-  background-color: var(--black);
-  color: var(--white);
-}
-
-
-/* Inline dark mode toggle button */
 /* Default toggle style */
 #darkModeToggle {
   padding: 0.2rem;
@@ -368,37 +388,21 @@ body.dark .toolbar {
   display: inline-block;
 }
 
-/* Light theme */
-body:not(.dark) #darkModeToggle {
-  background-color: var(--black);
-  color: var(--white);
-}
-
 /* Dark theme */
-body.dark #darkModeToggle {
-  background-color: var(--white);
-  color: var(--black);
+#darkModeToggle {
+  background-color: var(--dark-mode-bg-color);
+  color: var(--dark-mode-main-color);
 }
 
 #darkModeToggle:hover {
+  color: var(--light-gray);
+}
+
+.dark #darkModeToggle:hover {
   color: var(--medium-gray);
 }
 
-body.dark .font-toggle:hover, body.dark .font-toggle.active {
-    color: var(--white);
-}
-
-body.dark a:hover {
-    background: var(--dark-hover-bg);
-    transition-property: background;
-    transition-duration: 0.2s;
-}
-
-body.dark .title-block {
-    border-top: 3px solid var(--white);
-}
-
-body.dark ::selection {
+.dark ::selection {
   background-color: var(--medium-gray);
   color: inherit; /* optional: keep text color as is */
 }
@@ -407,4 +411,12 @@ body.dark ::selection {
 ::selection {
   background-color: var(--light-gray);
   color: inherit; /* optional: keep text color as is */
+}
+
+.line {
+    width: 100%;
+    height: 2px;
+    background-color: var(--main-color);
+    margin: 1.25em 0;
+    border: none;
 }

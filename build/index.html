@@ -46,26 +46,31 @@ function handleFontChange(evt) {
   <body>
     <div class="toolbar"><span class="font-menu"><a class="font-toggle active" id="font--crimson-pro" onmousedown="event.stopPropagation()" onclick="handleFontChange(this)">Crimson Pro</a></span><span class="font-menu"><a class="font-toggle" id="font--noto-serif" onmousedown="event.stopPropagation()" onclick="handleFontChange(this)">Noto Serif</a></span><span class="font-menu"><a class="font-toggle" id="font--roboto" onmousedown="event.stopPropagation()" onclick="handleFontChange(this)">Roboto</a></span><span id="darkModeToggle" onclick="toggleDarkMode()">Dark Mode</span></div>
     <div class="main-content">
-      <div class="about-me">
-        <h1>About Me</h1>
-        <p>Hello, I'm <span id="author">Zhe Ning</span> — a final-year mathematics undergraduate at <a href="https://en.wikipedia.org/wiki/National_University_of_Singapore">NUS</a>. I also like building things: — writing software, making music, or just brewing coffee. This blog is a record of what I make, learn, and think about.</p>
-        <p>You will find posts on:</p>
-        <ol>
-          <li value="1">Creative projects and development notes</li>
-          <li value="2">Reflections on learning, time and work</li>
-          <li value="3">Mathematics, typesetting, and problem writeups</li>
-        </ol>
-        <p>Thanks for reading.</p>
-      </div>
+      <h2>About Me</h2>
+      <p>Hello, I'm Zhe Ning — a final-year mathematics undergraduate at <a href="https://en.wikipedia.org/wiki/National_University_of_Singapore">NUS</a>. I also like building things: — writing software, making music, or just brewing coffee. This blog is a record of what I make, learn, and think about.</p>
+      <p>You will find posts on:</p>
+      <ol>
+        <li value="1">Creative projects and development notes</li>
+        <li value="2">Reflections on learning, time and work</li>
+        <li value="3">Mathematics, typesetting, and problem writeups</li>
+      </ol>
+      <div class="line"></div>
+      <h2>Posts</h2>
       <div class="post-list">
         <div class="post-item">
-          <p><a href="./posts/2025-05-21-week-1.html">Week 1</a></p>
-          <div class="post-prop">published: 2025-05-21 tags: typst, rust, blog-engine, dev-log</div>
+          <p><a class="post-title" href="./posts/2025-05-21-week-1.html">Week 1</a></p>
+          <div class="post-prop">
+            <div class="post-date">published: 2025-05-21</div>
+            <div class="post-tag-container">tags: <span class="post-tag">#typst</span>, <span class="post-tag">#rust</span>, <span class="post-tag">#blog-engine</span>, <span class="post-tag">#dev-log</span></div>
+          </div>
           <div class="post-desc">The project so far.</div>
         </div>
         <div class="post-item">
-          <p><a href="./posts/2025-05-13-example.html">Example</a></p>
-          <div class="post-prop">published: 2025-05-13 tags: it, is, working, yay</div>
+          <p><a class="post-title" href="./posts/2025-05-13-example.html">Example</a></p>
+          <div class="post-prop">
+            <div class="post-date">published: 2025-05-13</div>
+            <div class="post-tag-container">tags: <span class="post-tag">#it</span>, <span class="post-tag">#is</span>, <span class="post-tag">#working</span>, <span class="post-tag">#yay</span></div>
+          </div>
           <div class="post-desc">This is a post that tests various features of ssg and how the generated content looks and feels.</div>
         </div>
       </div>
